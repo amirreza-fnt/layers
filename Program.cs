@@ -27,7 +27,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "LayerManager API",
         Version = "v1",
-        Description = "API مدیریت لایه‌های نقشه سبزوار",
+        Description = "API مدیریت دسته‌بندی‌ها و راهنمای نقشه سبزوار",
         Contact = new OpenApiContact
         {
             Name = "LayerManager Team"
@@ -84,8 +84,10 @@ builder.Services.AddResponseCompression(options =>
         .Concat(new[] { "application/json" });
 });
 
-builder.Services.AddScoped<IMapLayerRepository, MapLayerRepository>();
-builder.Services.AddScoped<IMapLayerService, MapLayerService>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IGuideRepository, GuideRepository>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IGuideService, GuideService>();
 
 builder.Services.AddHealthChecks();
 
@@ -124,9 +126,13 @@ using (var scope = app.Services.CreateScope())
         var created = context.Database.EnsureCreated();
         if (created)
         {
-            logger.LogInformation("Database created successfully!");
-            await SeedDataAsync(context, logger);
+            logger.LogInformation("New tables created (CategoryHierarchies, MapGuides)");
         }
+
+        var categoryService = services.GetRequiredService<ICategoryService>();
+        await categoryService.SyncCategoriesAsync();
+        logger.LogInformation("Categories synced successfully");
+
         logger.LogInformation("Database ready");
     }
     catch (Exception ex)
@@ -142,51 +148,5 @@ app.Logger.LogInformation("Swagger: /swagger");
 app.Logger.LogInformation("══════════════════════════════════════\n");
 
 app.Run();
-
-static async Task SeedDataAsync(AppDbContext context, ILogger logger)
-{
-    if (await context.MapLayers.AnyAsync()) return;
-
-    var layers = new List<MapLayer>
-    {
-        new()
-        {
-            Slug = "toll",
-            Name = "پرداخت عوارض",
-            Description = "مشاهده و پرداخت عوارض نوسازی و پسماند",
-            IconName = "CreditCard",
-            Color = "#3B82F6",
-            SortOrder = 1,
-            IsActive = true,
-            ComponentName = "NosaziLayer"
-        },
-        new()
-        {
-            Slug = "kooche",
-            Name = "کوچه‌ها",
-            Description = "نمایش کوچه‌ها و معابر شهر سبزوار",
-            IconName = "Route",
-            Color = "#10B981",
-            SortOrder = 2,
-            IsActive = false,
-            ComponentName = "KoocheLayer"
-        },
-        new()
-        {
-            Slug = "mokeb",
-            Name = "موکب نما",
-            Description = "لیست موقعیت موکب و اسکان‌های شهر سبزوار",
-            IconName = "MapPin",
-            Color = "#8B5CF6",
-            SortOrder = 3,
-            IsActive = true,
-            ComponentName = "MokebLayer"
-        }
-    };
-
-    context.MapLayers.AddRange(layers);
-    await context.SaveChangesAsync();
-    logger.LogInformation("Seed data inserted: {Count} layers", layers.Count);
-}
 
 public partial class Program { }

@@ -142,3 +142,4 @@ D:\project\map\layer-manager\obj\Debug\net8.0\refint\LayerManager.API.dll
 D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.pdb
 D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.genruntimeconfig.cache
 D:\project\map\layer-manager\obj\Debug\net8.0\ref\LayerManager.API.dll
+D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.sourcelink.json
