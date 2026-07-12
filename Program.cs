@@ -99,7 +99,7 @@ app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/v1/swagger.json", "LayerManager API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "LayerManager API v1");
     c.RoutePrefix = "swagger";
 });
 
