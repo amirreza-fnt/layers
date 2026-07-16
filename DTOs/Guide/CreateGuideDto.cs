@@ -4,9 +4,6 @@ namespace LayerManager.API.DTOs.Guide;
 
 public class CreateGuideDto
 {
-    [Required(ErrorMessage = "دسته‌بندی الزامی است")]
-    public Guid CategoryId { get; set; }
-
     [Required(ErrorMessage = "عنوان راهنما الزامی است")]
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;

@@ -19,18 +19,6 @@ public class GuideService : IGuideService
         return items.Select(MapToDto);
     }
 
-    public async Task<IEnumerable<GuideDto>> GetByCategoryIdAsync(Guid categoryId)
-    {
-        var items = await _repo.GetByCategoryIdAsync(categoryId);
-        return items.Select(MapToDto);
-    }
-
-    public async Task<IEnumerable<GuideDto>> GetActiveByCategoryIdAsync(Guid categoryId)
-    {
-        var items = await _repo.GetActiveByCategoryIdAsync(categoryId);
-        return items.Select(MapToDto);
-    }
-
     public async Task<GuideDto?> GetByIdAsync(Guid id)
     {
         var item = await _repo.GetByIdAsync(id);
@@ -41,7 +29,6 @@ public class GuideService : IGuideService
     {
         var guide = new Models.MapGuide
         {
-            CategoryId = dto.CategoryId,
             Title = dto.Title,
             Description = dto.Description,
             ImageUrl = dto.ImageUrl,
@@ -82,8 +69,6 @@ public class GuideService : IGuideService
     private static GuideDto MapToDto(Models.MapGuide g) => new()
     {
         Id = g.Id,
-        CategoryId = g.CategoryId,
-        CategoryName = g.Category?.Name ?? "",
         Title = g.Title,
         Description = g.Description,
         ImageUrl = g.ImageUrl,

@@ -11,9 +11,6 @@ public class MapGuide
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [Required]
-    public Guid CategoryId { get; set; }
-
-    [Required]
     [MaxLength(200)]
     public string Title { get; set; } = string.Empty;
 
@@ -31,7 +28,4 @@ public class MapGuide
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    [ForeignKey(nameof(CategoryId))]
-    public virtual Category Category { get; set; } = null!;
 }

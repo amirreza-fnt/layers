@@ -17,27 +17,6 @@ public class GuideRepository : IGuideRepository
     public async Task<IEnumerable<MapGuide>> GetAllAsync()
     {
         return await _context.MapGuides
-            .Include(g => g.Category)
-            .OrderBy(g => g.SortOrder)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<MapGuide>> GetByCategoryIdAsync(Guid categoryId)
-    {
-        return await _context.MapGuides
-            .Include(g => g.Category)
-            .Where(g => g.CategoryId == categoryId)
-            .OrderBy(g => g.SortOrder)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<MapGuide>> GetActiveByCategoryIdAsync(Guid categoryId)
-    {
-        return await _context.MapGuides
-            .Include(g => g.Category)
-            .Where(g => g.CategoryId == categoryId && g.IsActive)
             .OrderBy(g => g.SortOrder)
             .AsNoTracking()
             .ToListAsync();
@@ -46,7 +25,6 @@ public class GuideRepository : IGuideRepository
     public async Task<MapGuide?> GetByIdAsync(Guid id)
     {
         return await _context.MapGuides
-            .Include(g => g.Category)
             .FirstOrDefaultAsync(g => g.Id == id);
     }
 

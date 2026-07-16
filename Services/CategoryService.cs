@@ -8,26 +8,19 @@ namespace LayerManager.API.Services;
 public class CategoryService : ICategoryService
 {
     private readonly ICategoryRepository _repo;
-    private readonly IGuideRepository _guideRepo;
 
-    public CategoryService(
-        ICategoryRepository repo,
-        IGuideRepository guideRepo)
+    public CategoryService(ICategoryRepository repo)
     {
         _repo = repo;
-        _guideRepo = guideRepo;
     }
 
     public async Task<IEnumerable<CategoryTreeNodeDto>> GetTreeAsync()
     {
         var categories = await _repo.GetActiveAsync();
         var hierarchies = await _repo.GetHierarchiesAsync();
-        var guides = await _guideRepo.GetAllAsync();
 
         var categoryMap = categories.ToDictionary(c => c.Id);
         var hierarchyMap = hierarchies.ToDictionary(h => h.CategoryId);
-        var guideMap = guides.GroupBy(g => g.CategoryId)
-            .ToDictionary(g => g.Key, g => g.ToList());
 
         var roots = new List<CategoryTreeNodeDto>();
 
@@ -35,7 +28,7 @@ public class CategoryService : ICategoryService
         {
             if (!hierarchyMap.TryGetValue(cat.Id, out var hier) || hier.ParentCategoryId is null)
             {
-                roots.Add(BuildNode(cat, categoryMap, hierarchyMap, guideMap));
+                roots.Add(BuildNode(cat, categoryMap, hierarchyMap));
             }
         }
 
@@ -45,8 +38,6 @@ public class CategoryService : ICategoryService
     public async Task<List<CategoryTreeNodeDto>> GetFlatTreeAsync()
     {
         var categories = await _repo.GetActiveAsync();
-        var hierarchies = await _repo.GetHierarchiesAsync();
-        var hierarchyMap = hierarchies.ToDictionary(h => h.CategoryId);
 
         return categories.Select(c => new CategoryTreeNodeDto
         {
@@ -132,8 +123,7 @@ public class CategoryService : ICategoryService
     private CategoryTreeNodeDto BuildNode(
         Category cat,
         Dictionary<Guid, Category> categoryMap,
-        Dictionary<Guid, CategoryHierarchy> hierarchyMap,
-        Dictionary<Guid, List<MapGuide>> guideMap)
+        Dictionary<Guid, CategoryHierarchy> hierarchyMap)
     {
         var node = new CategoryTreeNodeDto
         {
@@ -144,21 +134,7 @@ public class CategoryService : ICategoryService
             SortOrder = cat.SortOrder,
             IsActive = cat.IsActive,
             ComponentName = GetComponentName(cat.Name),
-            Guides = guideMap.TryGetValue(cat.Id, out var guides)
-                ? guides.Select(g => new GuideDto
-                {
-                    Id = g.Id,
-                    CategoryId = g.CategoryId,
-                    CategoryName = g.Category?.Name ?? cat.Name,
-                    Title = g.Title,
-                    Description = g.Description,
-                    ImageUrl = g.ImageUrl,
-                    Icon = g.Icon,
-                    SortOrder = g.SortOrder,
-                    IsActive = g.IsActive,
-                    CreatedAt = g.CreatedAt
-                }).ToList()
-                : new List<GuideDto>()
+            Guides = new List<GuideDto>()
         };
 
         foreach (var kv in hierarchyMap)
@@ -167,7 +143,7 @@ public class CategoryService : ICategoryService
             {
                 if (categoryMap.TryGetValue(kv.Key, out var childCat))
                 {
-                    node.Children.Add(BuildNode(childCat, categoryMap, hierarchyMap, guideMap));
+                    node.Children.Add(BuildNode(childCat, categoryMap, hierarchyMap));
                 }
             }
         }

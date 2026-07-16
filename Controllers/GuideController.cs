@@ -33,21 +33,6 @@ public class GuideController : ControllerBase
         }
     }
 
-    [HttpGet("by-category/{categoryId:guid}")]
-    public async Task<IActionResult> GetByCategory(Guid categoryId)
-    {
-        try
-        {
-            var items = await _guideService.GetActiveByCategoryIdAsync(categoryId);
-            return Ok(new { success = true, data = items });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error getting guide for category {Id}", categoryId);
-            return StatusCode(500, new { success = false, message = "خطا در دریافت راهنمای دسته‌بندی" });
-        }
-    }
-
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetById(Guid id)
     {
