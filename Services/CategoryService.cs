@@ -36,7 +36,6 @@ public class CategoryService : ICategoryService
         {
             Id = c.Id,
             Name = c.Name,
-            Icon = c.Icon,
             Color = c.Color,
             SortOrder = c.SortOrder,
             IsActive = c.IsActive,
@@ -68,26 +67,25 @@ public class CategoryService : ICategoryService
 
         var desired = new[]
         {
-            ("پرداخت عوارض", "CreditCard", "#3B82F6", 1),
-            ("موکب‌ها", "MapPin", "#8B5CF6", 2),
-            ("کوچه‌ها", "Route", "#10B981", 3),
-            ("پارک‌ها", "tree", "#33FF57", 4),
-            ("مراکز خرید", "shopping-cart", "#3357FF", 5),
-            ("مساجد", "mosque", "#FF33F5", 6),
-            ("بیمارستان‌ها", "hospital", "#FF3333", 7),
-            ("مدارس", "school", "#33FFF5", 8),
-            ("اماکن ورزشی", "sports", "#F5FF33", 9),
-            ("سایر", "map-pin", "#808080", 10),
+            ("پرداخت عوارض", "#3B82F6", 1),
+            ("موکب‌ها", "#8B5CF6", 2),
+            ("کوچه‌ها", "#10B981", 3),
+            ("پارک‌ها", "#33FF57", 4),
+            ("مراکز خرید", "#3357FF", 5),
+            ("مساجد", "#FF33F5", 6),
+            ("بیمارستان‌ها", "#FF3333", 7),
+            ("مدارس", "#33FFF5", 8),
+            ("اماکن ورزشی", "#F5FF33", 9),
+            ("سایر", "#808080", 10),
         };
 
-        foreach (var (name, icon, color, sortOrder) in desired)
+        foreach (var (name, color, sortOrder) in desired)
         {
             if (existingNames.Contains(name)) continue;
 
             var category = new Category
             {
                 Name = name,
-                Icon = icon,
                 Color = color,
                 SortOrder = sortOrder,
                 IsActive = true
@@ -113,7 +111,6 @@ public class CategoryService : ICategoryService
         {
             Id = cat.Id,
             Name = cat.Name,
-            Icon = cat.Icon,
             Color = cat.Color,
             SortOrder = cat.SortOrder,
             IsActive = cat.IsActive,
