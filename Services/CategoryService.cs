@@ -17,22 +17,15 @@ public class CategoryService : ICategoryService
     public async Task<IEnumerable<CategoryTreeNodeDto>> GetTreeAsync()
     {
         var categories = await _repo.GetActiveAsync();
-        var hierarchies = await _repo.GetHierarchiesAsync();
-
         var categoryMap = categories.ToDictionary(c => c.Id);
-        var hierarchyMap = hierarchies.ToDictionary(h => h.CategoryId);
 
-        var roots = new List<CategoryTreeNodeDto>();
+        var roots = categories
+            .Where(c => c.ParentId is null)
+            .Select(c => BuildNode(c, categoryMap))
+            .OrderBy(n => n.SortOrder)
+            .ToList();
 
-        foreach (var cat in categories)
-        {
-            if (!hierarchyMap.TryGetValue(cat.Id, out var hier) || hier.ParentCategoryId is null)
-            {
-                roots.Add(BuildNode(cat, categoryMap, hierarchyMap));
-            }
-        }
-
-        return roots.OrderBy(r => r.SortOrder).ToList();
+        return roots;
     }
 
     public async Task<List<CategoryTreeNodeDto>> GetFlatTreeAsync()
@@ -63,22 +56,8 @@ public class CategoryService : ICategoryService
             if (parent is null) return false;
         }
 
-        var existing = await _repo.GetHierarchyByCategoryIdAsync(categoryId);
-        if (existing is not null)
-        {
-            existing.ParentCategoryId = parentCategoryId;
-            await _repo.UpdateHierarchyAsync(existing);
-        }
-        else
-        {
-            var hierarchy = new CategoryHierarchy
-            {
-                CategoryId = categoryId,
-                ParentCategoryId = parentCategoryId
-            };
-            await _repo.CreateHierarchyAsync(hierarchy);
-        }
-
+        category.ParentId = parentCategoryId;
+        await _repo.UpdateAsync(category);
         return true;
     }
 
@@ -120,12 +99,17 @@ public class CategoryService : ICategoryService
         return true;
     }
 
-    private CategoryTreeNodeDto BuildNode(
+    private static CategoryTreeNodeDto BuildNode(
         Category cat,
-        Dictionary<Guid, Category> categoryMap,
-        Dictionary<Guid, CategoryHierarchy> hierarchyMap)
+        Dictionary<Guid, Category> categoryMap)
     {
-        var node = new CategoryTreeNodeDto
+        var children = categoryMap.Values
+            .Where(c => c.ParentId == cat.Id)
+            .OrderBy(c => c.SortOrder)
+            .Select(c => BuildNode(c, categoryMap))
+            .ToList();
+
+        return new CategoryTreeNodeDto
         {
             Id = cat.Id,
             Name = cat.Name,
@@ -134,22 +118,9 @@ public class CategoryService : ICategoryService
             SortOrder = cat.SortOrder,
             IsActive = cat.IsActive,
             ComponentName = GetComponentName(cat.Name),
+            Children = children,
             Guides = new List<GuideDto>()
         };
-
-        foreach (var kv in hierarchyMap)
-        {
-            if (kv.Value.ParentCategoryId == cat.Id)
-            {
-                if (categoryMap.TryGetValue(kv.Key, out var childCat))
-                {
-                    node.Children.Add(BuildNode(childCat, categoryMap, hierarchyMap));
-                }
-            }
-        }
-
-        node.Children = node.Children.OrderBy(c => c.SortOrder).ToList();
-        return node;
     }
 
     private static string? GetComponentName(string categoryName) => categoryName switch

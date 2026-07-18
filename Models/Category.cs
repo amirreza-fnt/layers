@@ -24,4 +24,11 @@ public class Category
     public bool IsActive { get; set; } = true;
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public Guid? ParentId { get; set; }
+
+    [ForeignKey(nameof(ParentId))]
+    public virtual Category? Parent { get; set; }
+
+    public virtual ICollection<Category> Children { get; set; } = new List<Category>();
 }

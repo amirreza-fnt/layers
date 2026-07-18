@@ -9,9 +9,6 @@ public interface ICategoryRepository
     Task<Category?> GetByIdAsync(Guid id);
     Task<Category?> GetByExactNameAsync(string name);
     Task<Category> CreateAsync(Category category);
-    Task<IEnumerable<CategoryHierarchy>> GetHierarchiesAsync();
-    Task<CategoryHierarchy?> GetHierarchyByCategoryIdAsync(Guid categoryId);
-    Task<CategoryHierarchy> CreateHierarchyAsync(CategoryHierarchy hierarchy);
-    Task UpdateHierarchyAsync(CategoryHierarchy hierarchy);
-    Task DeleteHierarchyAsync(Guid id);
+    Task UpdateAsync(Category category);
+    Task DeleteAsync(Guid id);
 }

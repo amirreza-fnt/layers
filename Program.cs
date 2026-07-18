@@ -129,29 +129,11 @@ using (var scope = app.Services.CreateScope())
             .SqlQuery<string>($"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'")
             .ToListAsync()).ToHashSet();
 
-        if (!existingTables.Contains("CategoryHierarchies"))
-        {
-            await context.Database.ExecuteSqlRawAsync(@"
-                CREATE TABLE [CategoryHierarchies] (
-                    [Id] uniqueidentifier NOT NULL DEFAULT NEWSEQUENTIALID(),
-                    [CategoryId] uniqueidentifier NOT NULL,
-                    [ParentCategoryId] uniqueidentifier NULL,
-                    [SortOrder] int NOT NULL DEFAULT 0,
-                    CONSTRAINT [PK_CategoryHierarchies] PRIMARY KEY ([Id]),
-                    CONSTRAINT [FK_CategoryHierarchies_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]),
-                    CONSTRAINT [FK_CategoryHierarchies_Categories_ParentCategoryId] FOREIGN KEY ([ParentCategoryId]) REFERENCES [Categories] ([Id])
-                );
-                CREATE UNIQUE INDEX [IX_CategoryHierarchies_CategoryId] ON [CategoryHierarchies] ([CategoryId]);
-                CREATE INDEX [IX_CategoryHierarchies_ParentCategoryId] ON [CategoryHierarchies] ([ParentCategoryId]);");
-            logger.LogInformation("Created CategoryHierarchies table");
-        }
-
         if (!existingTables.Contains("MapGuides"))
         {
             await context.Database.ExecuteSqlRawAsync(@"
                 CREATE TABLE [MapGuides] (
                     [Id] uniqueidentifier NOT NULL DEFAULT NEWSEQUENTIALID(),
-                    [CategoryId] uniqueidentifier NOT NULL,
                     [Title] nvarchar(200) NOT NULL,
                     [Description] nvarchar(2000) NULL,
                     [ImageUrl] nvarchar(500) NULL,
@@ -159,10 +141,8 @@ using (var scope = app.Services.CreateScope())
                     [SortOrder] int NOT NULL DEFAULT 0,
                     [IsActive] bit NOT NULL DEFAULT 1,
                     [CreatedAt] datetime2 NOT NULL DEFAULT GETUTCDATE(),
-                    CONSTRAINT [PK_MapGuides] PRIMARY KEY ([Id]),
-                    CONSTRAINT [FK_MapGuides_Categories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories] ([Id]) ON DELETE CASCADE
+                    CONSTRAINT [PK_MapGuides] PRIMARY KEY ([Id])
                 );
-                CREATE INDEX [IX_MapGuides_CategoryId] ON [MapGuides] ([CategoryId]);
                 CREATE INDEX [IX_MapGuides_IsActive] ON [MapGuides] ([IsActive]);
                 CREATE INDEX [IX_MapGuides_SortOrder] ON [MapGuides] ([SortOrder]);");
             logger.LogInformation("Created MapGuides table");

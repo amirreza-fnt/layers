@@ -50,40 +50,18 @@ public class CategoryRepository : ICategoryRepository
         return category;
     }
 
-    public async Task<IEnumerable<CategoryHierarchy>> GetHierarchiesAsync()
+    public async Task UpdateAsync(Category category)
     {
-        return await _context.CategoryHierarchies
-            .Include(h => h.Category)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<CategoryHierarchy?> GetHierarchyByCategoryIdAsync(Guid categoryId)
-    {
-        return await _context.CategoryHierarchies
-            .Include(h => h.Category)
-            .FirstOrDefaultAsync(h => h.CategoryId == categoryId);
-    }
-
-    public async Task<CategoryHierarchy> CreateHierarchyAsync(CategoryHierarchy hierarchy)
-    {
-        _context.CategoryHierarchies.Add(hierarchy);
-        await _context.SaveChangesAsync();
-        return hierarchy;
-    }
-
-    public async Task UpdateHierarchyAsync(CategoryHierarchy hierarchy)
-    {
-        _context.CategoryHierarchies.Update(hierarchy);
+        _context.Categories.Update(category);
         await _context.SaveChangesAsync();
     }
 
-    public async Task DeleteHierarchyAsync(Guid id)
+    public async Task DeleteAsync(Guid id)
     {
-        var entity = await _context.CategoryHierarchies.FindAsync(id);
+        var entity = await _context.Categories.FindAsync(id);
         if (entity is not null)
         {
-            _context.CategoryHierarchies.Remove(entity);
+            _context.Categories.Remove(entity);
             await _context.SaveChangesAsync();
         }
     }

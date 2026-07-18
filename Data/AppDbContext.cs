@@ -8,7 +8,6 @@ public class AppDbContext : DbContext
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Category> Categories => Set<Category>();
-    public DbSet<CategoryHierarchy> CategoryHierarchies => Set<CategoryHierarchy>();
     public DbSet<MapGuide> MapGuides => Set<MapGuide>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
