@@ -1,3 +1,4 @@
+using Map.Shared.Auth.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using LayerManager.API.Data;
@@ -77,6 +78,9 @@ builder.Services.AddCors(options =>
     }
 });
 
+builder.Services.AddMapJwtAuthentication(builder.Configuration);
+builder.Services.AddMapPermissionPolicies();
+
 builder.Services.AddResponseCompression(options =>
 {
     options.EnableForHttps = true;
@@ -112,6 +116,7 @@ else
     app.UseCors("AllowFrontend");
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");

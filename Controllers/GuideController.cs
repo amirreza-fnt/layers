@@ -1,3 +1,5 @@
+using Map.Shared.Auth.Authorization;
+using Map.Shared.Auth.Permissions;
 using Microsoft.AspNetCore.Mvc;
 using LayerManager.API.DTOs.Guide;
 using LayerManager.API.Services.Interfaces;
@@ -52,6 +54,7 @@ public class GuideController : ControllerBase
     }
 
     [HttpPost]
+    [HasPermission(PermissionConstants.GuideCreate)]
     public async Task<IActionResult> Create([FromBody] CreateGuideDto dto)
     {
         try
@@ -67,6 +70,7 @@ public class GuideController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [HasPermission(PermissionConstants.GuideUpdate)]
     public async Task<IActionResult> Update(Guid id, [FromBody] UpdateGuideDto dto)
     {
         try
@@ -85,6 +89,7 @@ public class GuideController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [HasPermission(PermissionConstants.GuideDelete)]
     public async Task<IActionResult> Delete(Guid id)
     {
         try

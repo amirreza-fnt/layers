@@ -1,3 +1,5 @@
+using Map.Shared.Auth.Authorization;
+using Map.Shared.Auth.Permissions;
 using Microsoft.AspNetCore.Mvc;
 using LayerManager.API.Services.Interfaces;
 
@@ -48,6 +50,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPatch("{categoryId:guid}/parent")]
+    [HasPermission(PermissionConstants.CategoryUpdate)]
     public async Task<IActionResult> SetParent(Guid categoryId, [FromQuery] Guid? parentId)
     {
         try
@@ -66,6 +69,7 @@ public class CategoryController : ControllerBase
     }
 
     [HttpPost("sync")]
+    [HasPermission(PermissionConstants.CategoryCreate)]
     public async Task<IActionResult> Sync()
     {
         try
