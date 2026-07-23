@@ -33,6 +33,7 @@ public class GuideService : IGuideService
             Description = dto.Description,
             ImageUrl = dto.ImageUrl,
             Icon = dto.Icon,
+            MapIcon = dto.MapIcon,
             SortOrder = dto.SortOrder,
             IsActive = dto.IsActive
         };
@@ -50,6 +51,7 @@ public class GuideService : IGuideService
         guide.Description = dto.Description;
         guide.ImageUrl = dto.ImageUrl;
         guide.Icon = dto.Icon;
+        guide.MapIcon = dto.MapIcon;
         guide.SortOrder = dto.SortOrder;
         guide.IsActive = dto.IsActive;
 
@@ -73,6 +75,7 @@ public class GuideService : IGuideService
         Description = g.Description,
         ImageUrl = g.ImageUrl,
         Icon = g.Icon,
+        MapIcon = g.MapIcon,
         SortOrder = g.SortOrder,
         IsActive = g.IsActive,
         CreatedAt = g.CreatedAt

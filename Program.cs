@@ -143,6 +143,7 @@ using (var scope = app.Services.CreateScope())
                     [Description] nvarchar(2000) NULL,
                     [ImageUrl] nvarchar(500) NULL,
                     [Icon] nvarchar(100) NULL,
+                    [MapIcon] nvarchar(100) NULL,
                     [SortOrder] int NOT NULL DEFAULT 0,
                     [IsActive] bit NOT NULL DEFAULT 1,
                     [CreatedAt] datetime2 NOT NULL DEFAULT GETUTCDATE(),

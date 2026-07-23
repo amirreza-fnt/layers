@@ -143,3 +143,6 @@ D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.pdb
 D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.genruntimeconfig.cache
 D:\project\map\layer-manager\obj\Debug\net8.0\ref\LayerManager.API.dll
 D:\project\map\layer-manager\obj\Debug\net8.0\LayerManager.API.sourcelink.json
+D:\project\map\layer-manager\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+D:\project\map\layer-manager\bin\Debug\net8.0\Map.Shared.Auth.dll
+D:\project\map\layer-manager\bin\Debug\net8.0\Map.Shared.Auth.pdb

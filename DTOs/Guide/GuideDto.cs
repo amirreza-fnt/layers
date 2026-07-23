@@ -7,6 +7,7 @@ public class GuideDto
     public string? Description { get; set; }
     public string? ImageUrl { get; set; }
     public string? Icon { get; set; }
+    public string? MapIcon { get; set; }
     public int SortOrder { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
